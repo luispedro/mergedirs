@@ -49,3 +49,14 @@ def merge(origin, dest):
             continue
         yield os.unlink, (ofname,)
 
+def main(argv):
+    origin = argv[1]
+    dest = argv[2]
+    for op,args in merge(origin, dest):
+        op(*args)
+
+
+if __name__ == '__main__':
+    import sys
+    main(sys.argv)
+
