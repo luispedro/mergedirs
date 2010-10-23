@@ -41,6 +41,9 @@ def merge(origin, dest):
         if not path.exists(dfname):
             yield os.rename, (ofname, dfname)
             continue
+        if path.isdir(ofname):
+            filequeue.extend(path.join(ofname,ch) for ch in os.listdir(ofname))
+            continue
         if hash_file(ofname) != hash_file(dfname):
             print 'Content differs: %s' % (fname)
             continue
