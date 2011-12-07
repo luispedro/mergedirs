@@ -53,6 +53,13 @@ def merge(origin, dest):
         yield os.unlink, (ofname,)
 
 def main(argv):
+    if len(argv) < 3:
+        print '''
+%s <origin> <dest>
+
+Merges directory <origin> into directory <dest>
+''' % (argv[0])
+        sys.exit(0)
     origin = argv[1]
     dest = argv[2]
     for op,args in merge(origin, dest):
