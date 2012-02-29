@@ -15,13 +15,12 @@ def hash_file(filename):
     Computes hash for contents of `filename`
     '''
     hash = hashlib.md5()
-    input = file(filename)
-    s = input.read(4096)
-    while s:
-        hash.update(s)
+    with open(filename) as input:
         s = input.read(4096)
-    content = hash.hexdigest()
-    return content
+        while s:
+            hash.update(s)
+            s = input.read(4096)
+    return hash.hexdigest()
 
 def props_for(filename):
     '''
