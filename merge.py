@@ -55,24 +55,28 @@ def merge(origin, dest, options):
         dfname = path.join(dest, fname)
         if not path.exists(dfname):
             if not options.remove_only:
+                if options.verbose:
+                    print 'mv', ofname, dfname
                 yield os.rename, (ofname, dfname)
-            continue
-        if path.isdir(ofname):
+        elif path.isdir(ofname):
             filequeue.extend(path.join(fname,ch) for ch in os.listdir(ofname))
-            continue
-        if not options.ignore_flags and props_for(ofname) != props_for(dfname):
+        elif not options.ignore_flags and props_for(ofname) != props_for(dfname):
             print 'Flags differ: %s' % (fname)
-            continue
-        if hash_file(ofname) != hash_file(dfname):
+        elif path.isdir(dfname):
+            print 'File `%s` matches directory `%s`' % (ofname, dfname)
+        elif hash_file(ofname) != hash_file(dfname):
             print 'Content differs: %s' % (fname)
-            continue
-        yield os.unlink, (ofname,)
+        else:
+            if options.verbose:
+                print 'rm', ofname
+            yield os.unlink, (ofname,)
 
 def main(argv):
     from optparse import OptionParser
     parser = OptionParser(usage=_usage_simple % argv[0], version=__version__)
     parser.add_option('--ignore-flags', action='store_true', dest='ignore_flags')
     parser.add_option('--remove-only', action='store_true', dest='remove_only')
+    parser.add_option('--verbose', action='store_true', dest='verbose')
     options,args = parser.parse_args(argv)
     if len(args) < 3:
         print _usage_simple % argv[0]

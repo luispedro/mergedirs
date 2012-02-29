@@ -1,3 +1,4 @@
 Version 0.1
-	* --remove-onlye option
+	* --verbose
+	* --remove-only option
 	* --ignore-flags option
