@@ -1,6 +1,13 @@
 import os
 from os import path
 import hashlib
+
+__version__ = '0.1'
+_usage_simple = '''
+%s <origin> <dest>
+
+Merges directory <origin> into directory <dest>
+'''
 def hash_file(filename):
     '''
     hash = hash_file(filename)
@@ -26,7 +33,7 @@ def props_for(filename):
     return st.st_mode, st.st_uid, st.st_gid, st.st_mtime
 
 
-def merge(origin, dest, ignore_flags=False):
+def merge(origin, dest, options):
     '''
     for op,args in merge(origin, dest);
         op(*args)
@@ -39,8 +46,7 @@ def merge(origin, dest, ignore_flags=False):
         path to origin
     dest : str
         path to destination
-    ignore_flags : bool, optional
-        whether to ignore flags (default: False)
+    options : options object
     '''
     filequeue = os.listdir(origin)
     while filequeue:
@@ -48,12 +54,13 @@ def merge(origin, dest, ignore_flags=False):
         ofname = path.join(origin, fname)
         dfname = path.join(dest, fname)
         if not path.exists(dfname):
-            yield os.rename, (ofname, dfname)
+            if not options.remove_only:
+                yield os.rename, (ofname, dfname)
             continue
         if path.isdir(ofname):
             filequeue.extend(path.join(fname,ch) for ch in os.listdir(ofname))
             continue
-        if not ignore_flags and props_for(ofname) != props_for(dfname):
+        if not options.ignore_flags and props_for(ofname) != props_for(dfname):
             print 'Flags differ: %s' % (fname)
             continue
         if hash_file(ofname) != hash_file(dfname):
@@ -62,17 +69,16 @@ def merge(origin, dest, ignore_flags=False):
         yield os.unlink, (ofname,)
 
 def main(argv):
-    if len(argv) < 3:
-        print '''
-%s <origin> <dest>
-
-Merges directory <origin> into directory <dest>
-''' % (argv[0])
-        sys.exit(0)
-    origin = argv[1]
-    dest = argv[2]
-    ignore_flags = (len(argv) > 3 and argv[3] == '--ignore-flags')
-    for op,args in merge(origin, dest, ignore_flags=ignore_flags):
+    from optparse import OptionParser
+    parser = OptionParser(usage=_usage_simple % argv[0], version=__version__)
+    parser.add_option('--ignore-flags', action='store_true', dest='ignore_flags')
+    parser.add_option('--remove-only', action='store_true', dest='remove_only')
+    options,args = parser.parse_args(argv)
+    if len(args) < 3:
+        print _usage_simple % argv[0]
+        sys.exit(1)
+    _, origin, dest = args
+    for op,args in merge(origin, dest, options):
         op(*args)
 
 
