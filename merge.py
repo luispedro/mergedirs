@@ -59,10 +59,14 @@ def merge(origin, dest, options):
                 yield os.rename, (ofname, dfname)
         elif path.isdir(ofname):
             filequeue.extend(path.join(fname,ch) for ch in os.listdir(ofname))
+        elif not path.isfile(ofname):
+            print 'Ignoring non-file non-directory: %s' % ofname
         elif not options.ignore_flags and props_for(ofname) != props_for(dfname):
             print 'Flags differ: %s' % (fname)
         elif path.isdir(dfname):
             print 'File `%s` matches directory `%s`' % (ofname, dfname)
+        elif not path.isfile(dfname):
+            print 'File `%s` matches non-file `%s`' % (ofname, dfname)
         elif hash_file(ofname) != hash_file(dfname):
             print 'Content differs: %s' % (fname)
         else:
