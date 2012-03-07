@@ -91,8 +91,9 @@ def main(argv):
     parser.add_option('--continue-on-error', action='store_true', dest='continue_on_error')
     options,args = parser.parse_args(argv)
     if len(args) < 3:
+        from sys import exit
         print _usage_simple % argv[0]
-        sys.exit(1)
+        exit(1)
     _, origin, dest = args
     for op,args in merge(origin, dest, options):
         try:
