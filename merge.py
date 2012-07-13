@@ -23,6 +23,27 @@ def hash_file(filename):
             s = input.read(4096)
     return hash.hexdigest()
 
+def hash_recursive(directory):
+    '''
+    hash = hash_recursive(directory)
+
+    Computes a hash recursively
+    '''
+    from os import listdir, path
+    files = listdir(directory)
+    files.sort()
+
+    hash = hashlib.md5()
+    for f in files:
+        p = path.join(directory, f)
+        if path.isdir(p):
+            hash.update(hash_recursive(p))
+        elif path.isfile(p):
+            hash.update(hash_file(p))
+        else:
+            raise OSError("Cannot handle files such as `%s`" % p)
+    return hash.hexdigest()
+
 def props_for(filename):
     '''
     props = props_for(filename)
