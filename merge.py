@@ -80,6 +80,8 @@ def merge(origin, dest, options):
                     if options.verbose:
                         print 'mv', ofname, dfname
                     yield os.rename, (ofname, dfname)
+                elif options.verbose:
+                    print '#mv', ofname, dfname
             elif path.isdir(ofname):
                 filequeue.extend(path.join(fname,ch) for ch in os.listdir(ofname))
             elif not path.isfile(ofname):
