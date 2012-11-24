@@ -112,20 +112,34 @@ def main(argv):
     parser.add_option('--remove-only', action='store_true', dest='remove_only')
     parser.add_option('--verbose', action='store_true', dest='verbose')
     parser.add_option('--continue-on-error', action='store_true', dest='continue_on_error')
+    parser.add_option('--mode',
+                        action='store',
+                        dest='mode',
+                        default='merge',
+                        help='What to do [merge/hash]')
     options,args = parser.parse_args(argv)
-    if len(args) < 3:
-        from sys import exit
-        print _usage_simple % argv[0]
-        exit(1)
-    _, origin, dest = args
-    for op,args in merge(origin, dest, options):
-        try:
-            op(*args)
-        except IOError, err:
-            import sys
-            print >>sys.stderr, 'Error executing ', op, args, err
-            if not options.continue_on_error:
-                break
+    if options.mode == 'merge':
+        if len(args) < 3:
+            from sys import exit
+            print _usage_simple % argv[0]
+            exit(1)
+        _, origin, dest = args
+        for op,args in merge(origin, dest, options):
+            try:
+                op(*args)
+            except IOError, err:
+                import sys
+                print >>sys.stderr, 'Error executing ', op, args, err
+                if not options.continue_on_error:
+                    break
+    elif options.mode == 'hash':
+        if len(args) != 2:
+            from sys import exit
+            print 'hash mode needs path'
+            exit(1)
+        _,path = args
+        h = hash_recursive(path)
+        print '{:<24} {}'.format(path, h)
 
 
 if __name__ == '__main__':
