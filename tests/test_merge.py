@@ -12,9 +12,13 @@ def test_props_for():
     assert p == p2
     p2 = merge.props_for('tests/data/B/3')
     assert p != p2
+
+def test_rsync_copy():
     p = merge.props_for('tests/data/A/1')
     p2 = merge.props_for('tests/data/B/1')
     assert p == p2
+
 def test_merge():
-    for op, args in merge.merge('tests/data/A', 'tests/data/B'):
+    options,_ = merge.parse_options(['merge'])
+    for op, args in merge.merge('tests/data/A', 'tests/data/B', options):
         assert op in (os.rename, os.unlink)

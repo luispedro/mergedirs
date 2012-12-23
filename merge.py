@@ -104,8 +104,7 @@ def merge(origin, dest, options):
             if not options.continue_on_error:
                 return
 
-
-def main(argv):
+def parse_options(argv):
     from optparse import OptionParser
     parser = OptionParser(usage=_usage_simple % argv[0], version=__version__)
     parser.add_option('--ignore-flags', action='store_true', dest='ignore_flags')
@@ -117,7 +116,10 @@ def main(argv):
                         dest='mode',
                         default='merge',
                         help='What to do [merge/hash]')
-    options,args = parser.parse_args(argv)
+    return parser.parse_args(argv)
+
+def main(argv):
+    options,args = parse_options(argv)
     if options.mode == 'merge':
         if len(args) < 3:
             from sys import exit
