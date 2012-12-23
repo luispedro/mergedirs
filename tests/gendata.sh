@@ -1,4 +1,4 @@
-#!/usr/bash
+#!/usr/bin/env bash
 mkdir data
 cd data
 mkdir A
