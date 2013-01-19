@@ -29,6 +29,7 @@ setup(name='merge',
       author='Luis Pedro Coelho',
       author_email='lpc@cmu.edu',
       url='http://luispedro.org/software/merge/',
+      scripts = ['bin/mergedirs'],
       license='BSD',
       packages=find_packages(),
       )
