@@ -4,9 +4,13 @@ import hashlib
 
 __version__ = '0.1'
 _usage_simple = '''
-%s <origin> <dest>
+{argv0} <origin> <dest>
 
 Merges directory <origin> into directory <dest>
+
+{argv0} --mode=hash [FLAGS] <directory>
+
+Hash a directory (recursively)
 '''
 def hash_file(filename):
     '''
@@ -106,7 +110,7 @@ def merge(origin, dest, options):
 
 def parse_options(argv):
     from optparse import OptionParser
-    parser = OptionParser(usage=_usage_simple % argv[0], version=__version__)
+    parser = OptionParser(usage=_usage_simple.format(argv0=argv[0]), version=__version__)
     parser.add_option('--ignore-flags', action='store_true', dest='ignore_flags')
     parser.add_option('--remove-only', action='store_true', dest='remove_only')
     parser.add_option('--verbose', action='store_true', dest='verbose')
