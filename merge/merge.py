@@ -127,7 +127,7 @@ def main(argv):
     if options.mode == 'merge':
         if len(args) < 3:
             from sys import exit
-            print _usage_simple % argv[0]
+            print(_usage_simple.format(argv0=argv[0]))
             exit(1)
         _, origin, dest = args
         for op,args in merge(origin, dest, options):
