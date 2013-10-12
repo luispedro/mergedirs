@@ -1,3 +1,6 @@
+Version 0.1+
+	* --set-oldest
+
 Version 0.1
 	* --verbose
 	* --remove-only option

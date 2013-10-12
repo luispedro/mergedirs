@@ -1,6 +1,7 @@
 import os
 from os import path
 import hashlib
+from .flags import set_oldest
 
 __version__ = '0.1'
 _usage_simple = '''
@@ -101,6 +102,8 @@ def merge(origin, dest, options):
             else:
                 if options.verbose:
                     print 'rm', ofname
+                if options.set_oldest:
+                    yield set_oldest, (ofname,dfname)
                 yield os.unlink, (ofname,)
         except IOError, e:
             import sys
@@ -115,6 +118,7 @@ def parse_options(argv):
     parser.add_option('--remove-only', action='store_true', dest='remove_only')
     parser.add_option('--verbose', action='store_true', dest='verbose')
     parser.add_option('--continue-on-error', action='store_true', dest='continue_on_error')
+    parser.add_option('--set-oldest', action='store_true', dest='set_oldest', help='Set mtime & atime to oldest of origin/destination')
     parser.add_option('--mode',
                         action='store',
                         dest='mode',
@@ -124,6 +128,10 @@ def parse_options(argv):
 
 def main(argv):
     options,args = parse_options(argv)
+    if options.set_oldest and not options.ignore_flags:
+        from sys import exit,stderr
+        stderr.write("--set-oldest does not make sense without --ignore-flags\n")
+        exit(1)
     if options.mode == 'merge':
         if len(args) < 3:
             from sys import exit
