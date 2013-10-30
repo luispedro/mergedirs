@@ -95,7 +95,7 @@ def merge(origin, dest, options):
                 print 'Flags differ: %s' % (fname)
             elif path.isdir(dfname):
                 print 'File `%s` matches directory `%s`' % (ofname, dfname)
-            elif not path.isfile(dfname):
+            elif not path.isfile(dfname) and not (options.follow_links and path.islink(dfname)):
                 print 'File `%s` matches non-file `%s`' % (ofname, dfname)
             elif hash_file(ofname) != hash_file(dfname):
                 print 'Content differs: %s' % (fname)
@@ -118,6 +118,7 @@ def parse_options(argv):
     parser.add_option('--remove-only', action='store_true', dest='remove_only')
     parser.add_option('--verbose', action='store_true', dest='verbose')
     parser.add_option('--continue-on-error', action='store_true', dest='continue_on_error')
+    parser.add_option('--follow-links', action='store_true', dest='follow_links', help='Follow links to content (destination)')
     parser.add_option('--set-oldest', action='store_true', dest='set_oldest', help='Set mtime & atime to oldest of origin/destination')
     parser.add_option('--mode',
                         action='store',
