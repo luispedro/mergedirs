@@ -34,7 +34,7 @@ def hash_recursive(directory):
 
     Computes a hash recursively
     '''
-    from os import listdir, path
+    from os import listdir, path, readlink
     files = listdir(directory)
     files.sort()
 
@@ -45,6 +45,9 @@ def hash_recursive(directory):
             hash.update(hash_recursive(p))
         elif path.isfile(p):
             hash.update(hash_file(p))
+        elif path.islink(p):
+            hash.update('link')
+            hash.update(readlink(p))
         else:
             raise OSError("Cannot handle files such as `%s`" % p)
     return hash.hexdigest()
