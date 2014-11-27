@@ -21,12 +21,12 @@ def hash_file(filename):
     '''
     #print('hashing({})...'.format(filename))
     hash = hashlib.md5()
-    with open(filename) as input:
+    with open(filename, 'rb') as input:
         s = input.read(4096)
         while s:
             hash.update(s)
             s = input.read(4096)
-    return hash.hexdigest()
+    return hash.hexdigest().encode('ascii')
 
 def hash_recursive(directory):
     '''
@@ -49,8 +49,8 @@ def hash_recursive(directory):
             hash.update('link')
             hash.update(readlink(p))
         else:
-            raise OSError("Cannot handle files such as `%s`" % p)
-    return hash.hexdigest()
+            raise OSError("Cannot handle files such as `{}`".format(p))
+    return hash.hexdigest().encode('ascii')
 
 def props_for(filename):
     '''
@@ -90,18 +90,23 @@ def merge(origin, dest, options):
                     yield os.rename, (ofname, dfname)
                 elif options.verbose:
                     print('#mv {} {}'.format(ofname, dfname))
+
+
+
+
+
             elif path.isdir(ofname):
                 filequeue.extend(path.join(fname,ch) for ch in os.listdir(ofname))
             elif not path.isfile(ofname):
                 print('Ignoring non-file non-directory: {}'.format(ofname))
             elif not options.ignore_flags and props_for(ofname) != props_for(dfname):
-                print('Flags differ: %s' % (fname))
+                print('Flags differ: {}'.format(fname))
             elif path.isdir(dfname):
-                print('File `%s` matches directory `%s`' % (ofname, dfname))
+                print('File `{}` matches directory `{}`'.format(ofname, dfname))
             elif not path.isfile(dfname) and not (options.follow_links and path.islink(dfname)):
-                print('File `%s` matches non-file `%s`' % (ofname, dfname))
+                print('File `{}` matches non-file `{}`'.format(ofname, dfname))
             elif hash_file(ofname) != hash_file(dfname):
-                print('Content differs: %s' % (fname))
+                print('Content differs: {}'.format% (fname))
             else:
                 if options.verbose:
                     print('rm {}'.format(ofname))
