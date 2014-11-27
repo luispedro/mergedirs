@@ -162,7 +162,7 @@ def main(argv):
             exit(1)
         for path in args[1:]:
             h = hash_recursive(path)
-            print('{:<24} {}'.format(path, h))
+            print('{:<24} {}'.format(path, h.decode('ascii')))
 
 
 if __name__ == '__main__':
