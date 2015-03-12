@@ -16,7 +16,11 @@ def test_props_for():
 def test_rsync_copy():
     p = merge.props_for('merge/tests/data/A/1')
     p2 = merge.props_for('merge/tests/data/B/1')
-    assert p == p2
+
+    assert p[:3] == p2[:3]
+    # Rsync does not always copy the full timestamp, but it should copy the
+    # integer version:
+    assert int(p[3]) == int(p2[3])
 
 def test_merge():
     options,_ = merge.parse_options(['merge'])
