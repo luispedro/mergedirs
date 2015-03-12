@@ -1,10 +1,8 @@
 language: python
 python:
-    - "2.6"
     - "2.7"
     - "3.3"
-virtualenv:
-    system_site_packages: true
+    - "3.4"
 install:
     - cd merge/tests && ./gendata.sh && cd ../..
 script: nosetests
