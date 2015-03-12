@@ -19,7 +19,7 @@ def hash_file(filename):
 
     Computes hash for contents of `filename`
     '''
-    #print 'hashing(%s)...' % filename
+    #print('hashing({})...'.format(filename))
     hash = hashlib.md5()
     with open(filename) as input:
         s = input.read(4096)
@@ -86,31 +86,31 @@ def merge(origin, dest, options):
             if not path.exists(dfname):
                 if not options.remove_only:
                     if options.verbose:
-                        print 'mv', ofname, dfname
+                        print('mv {} {}'.format(ofname, dfname))
                     yield os.rename, (ofname, dfname)
                 elif options.verbose:
-                    print '#mv', ofname, dfname
+                    print('#mv {} {}'.format(ofname, dfname))
             elif path.isdir(ofname):
                 filequeue.extend(path.join(fname,ch) for ch in os.listdir(ofname))
             elif not path.isfile(ofname):
-                print 'Ignoring non-file non-directory: %s' % ofname
+                print('Ignoring non-file non-directory: {}'.format(ofname))
             elif not options.ignore_flags and props_for(ofname) != props_for(dfname):
-                print 'Flags differ: %s' % (fname)
+                print('Flags differ: %s' % (fname))
             elif path.isdir(dfname):
-                print 'File `%s` matches directory `%s`' % (ofname, dfname)
+                print('File `%s` matches directory `%s`' % (ofname, dfname))
             elif not path.isfile(dfname) and not (options.follow_links and path.islink(dfname)):
-                print 'File `%s` matches non-file `%s`' % (ofname, dfname)
+                print('File `%s` matches non-file `%s`' % (ofname, dfname))
             elif hash_file(ofname) != hash_file(dfname):
-                print 'Content differs: %s' % (fname)
+                print('Content differs: %s' % (fname))
             else:
                 if options.verbose:
-                    print 'rm', ofname
+                    print('rm {}'.format(ofname))
                 if options.set_oldest:
                     yield set_oldest, (ofname,dfname)
                 yield os.unlink, (ofname,)
-        except IOError, e:
+        except IOError as e:
             import sys
-            print >>sys.stderr, 'Error accessing `%s`/`%s`: %s' % (ofname, dfname, e)
+            sys.stderr.write('Error accessing `{}`/`{}`: {}\n'.format(ofname, dfname, e))
             if not options.continue_on_error:
                 return
 
@@ -145,19 +145,19 @@ def main(argv):
         for op,args in merge(origin, dest, options):
             try:
                 op(*args)
-            except IOError, err:
+            except IOError as err:
                 import sys
-                print >>sys.stderr, 'Error executing ', op, args, err
+                sys.stderr.write('Error executing {} {}: {}\n'.format(op, args, err))
                 if not options.continue_on_error:
                     break
     elif options.mode == 'hash':
         if len(args) < 2:
             from sys import exit
-            print 'hash mode needs path'
+            print('hash mode needs path')
             exit(1)
         for path in args[1:]:
             h = hash_recursive(path)
-            print '{:<24} {}'.format(path, h)
+            print('{:<24} {}'.format(path, h))
 
 
 if __name__ == '__main__':

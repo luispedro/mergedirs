@@ -1,17 +1,17 @@
 # -*- coding: utf-8 -*-
 try:
-    import setuptools
+    from setuptools import setup, find_packages
 except ImportError:
     import sys
-    print >>sys.stderr, '''\
+    sys.stderr.write('''\
 Could not import `setuptools` module.
 
 Please install it.
 
-Under Ubuntu, it is in a package called `python-setuptools`.'''
+Under Ubuntu, it is in a package called `python-setuptools`.
+''')
     sys.exit(1)
 
-from setuptools import setup, find_packages
 __version__ = '0.1-git'
 
 long_description='''
