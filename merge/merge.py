@@ -151,13 +151,13 @@ def main(argv):
                 if not options.continue_on_error:
                     break
     elif options.mode == 'hash':
-        if len(args) != 2:
+        if len(args) < 2:
             from sys import exit
             print 'hash mode needs path'
             exit(1)
-        _,path = args
-        h = hash_recursive(path)
-        print '{:<24} {}'.format(path, h)
+        for path in args[1:]:
+            h = hash_recursive(path)
+            print '{:<24} {}'.format(path, h)
 
 
 if __name__ == '__main__':
