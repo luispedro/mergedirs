@@ -4,7 +4,6 @@ def test_hash_file():
     h = merge.hash_file('merge/tests/data/A/3')
     h2 = merge.hash_file('merge/tests/data/A/3')
     assert h == h2
-    assert type(h) is str
 
 def test_props_for():
     p = merge.props_for('merge/tests/data/A/3')
