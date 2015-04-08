@@ -106,7 +106,7 @@ def merge(origin, dest, options):
             elif not path.isfile(dfname) and not (options.follow_links and path.islink(dfname)):
                 print('File `{}` matches non-file `{}`'.format(ofname, dfname))
             elif hash_file(ofname) != hash_file(dfname):
-                print('Content differs: {}'.format% (fname))
+                print('Content differs: {}'.format(fname))
             else:
                 if options.verbose:
                     print('rm {}'.format(ofname))
