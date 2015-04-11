@@ -147,6 +147,10 @@ def main(argv):
             print(_usage_simple.format(argv0=argv[0]))
             exit(1)
         _, origin, dest = args
+        if origin == dest:
+            from sys import exit
+            print('origin and dest are the same.')
+            exit(2)
         for op,args in merge(origin, dest, options):
             try:
                 op(*args)
