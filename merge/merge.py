@@ -147,7 +147,7 @@ def main(argv):
             print(_usage_simple.format(argv0=argv[0]))
             exit(1)
         _, origin, dest = args
-        if origin == dest:
+        if path.abspath(origin) == path.abspath(dest):
             from sys import exit
             print('origin and dest are the same.')
             exit(2)
@@ -164,9 +164,9 @@ def main(argv):
             from sys import exit
             print('hash mode needs path')
             exit(1)
-        for path in args[1:]:
-            h = hash_recursive(path)
-            print('{:<24} {}'.format(path, h.decode('ascii')))
+        for arg in args[1:]:
+            h = hash_recursive(arg)
+            print('{:<24} {}'.format(arg, h.decode('ascii')))
 
 
 if __name__ == '__main__':
