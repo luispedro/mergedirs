@@ -90,13 +90,10 @@ def merge(origin, dest, options):
                     yield os.rename, (ofname, dfname)
                 elif options.verbose:
                     print('#mv {} {}'.format(ofname, dfname))
-
-
-
-
-
+            elif not path.islink(ofname):
+                print('Ignoring link: {}'.format(ofname))
             elif path.isdir(ofname):
-                filequeue.extend(path.join(fname,ch) for ch in os.listdir(ofname))
+                    filequeue.extend(path.join(fname,ch) for ch in os.listdir(ofname))
             elif not path.isfile(ofname):
                 print('Ignoring non-file non-directory: {}'.format(ofname))
             elif not options.ignore_flags and props_for(ofname) != props_for(dfname):
