@@ -34,7 +34,7 @@ def hash_recursive(directory):
 
     Computes a hash recursively
     '''
-    from os import listdir, path, readlink
+    from os import listdir, readlink
     files = listdir(directory)
     files.sort()
 
