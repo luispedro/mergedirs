@@ -41,13 +41,13 @@ def hash_recursive(directory):
     hash = hashlib.md5()
     for f in files:
         p = path.join(directory, f)
-        if path.isdir(p):
+        if path.islink(p):
+            hash.update('link')
+            hash.update(readlink(p))
+        elif path.isdir(p):
             hash.update(hash_recursive(p))
         elif path.isfile(p):
             hash.update(hash_file(p))
-        elif path.islink(p):
-            hash.update('link')
-            hash.update(readlink(p))
         else:
             raise OSError("Cannot handle files such as `{}`".format(p))
     return hash.hexdigest().encode('ascii')
