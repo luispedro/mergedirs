@@ -13,6 +13,31 @@ Merges directory <origin> into directory <dest>
 
 Hash a directory (recursively)
 '''
+def same_file_content(file1, file2):
+    '''same_file_content(file1: filepath, file2: filepath) -> bool
+
+    Checks if `file1` and `file2` have the same content
+
+    Parameters
+    ----------
+    file1 : filepath
+    file2 : filepath
+
+    Returns
+    -------
+    is_same : bool
+    '''
+    bufsize = 8192
+    with open(file1) as input1:
+        with open(file2) as input2:
+            while True:
+                data1 = input1.read(bufsize)
+                data2 = input2.read(bufsize)
+                if data1 != data2:
+                    return False
+                if not data1:
+                    return True
+
 def hash_file(filename):
     '''
     hash = hash_file(filename)
@@ -102,7 +127,7 @@ def merge(origin, dest, options):
                 print('File `{}` matches directory `{}`'.format(ofname, dfname))
             elif not path.isfile(dfname) and not (options.follow_links and path.islink(dfname)):
                 print('File `{}` matches non-file `{}`'.format(ofname, dfname))
-            elif hash_file(ofname) != hash_file(dfname):
+            elif not same_file_content(ofname, dfname):
                 print('Content differs: {}'.format(fname))
             else:
                 if options.verbose:
