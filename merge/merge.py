@@ -1,5 +1,6 @@
 import os
 from os import path
+import shutil
 import hashlib
 from .flags import set_oldest
 
@@ -87,10 +88,18 @@ def props_for(filename):
     return st.st_mode, st.st_uid, st.st_gid, st.st_mtime
 
 
+class Action(object):
+    def __init__(self, f, args):
+        self.f = f
+        self.args = args
+
+    def run(self):
+        self.f(*self.args)
+
 def merge(origin, dest, options):
     '''
-    for op,args in merge(origin, dest);
-        op(*args)
+    for op in merge(origin, dest);
+        op.run()
 
     Attempt to merge directories `origin` and `dest`
 
@@ -112,7 +121,7 @@ def merge(origin, dest, options):
                 if not options.remove_only:
                     if options.verbose:
                         print('mv {} {}'.format(ofname, dfname))
-                    yield os.rename, (ofname, dfname)
+                    yield Action(shutil.move, (ofname, dfname))
                 elif options.verbose:
                     print('#mv {} {}'.format(ofname, dfname))
             elif path.islink(ofname):
@@ -133,8 +142,8 @@ def merge(origin, dest, options):
                 if options.verbose:
                     print('rm {}'.format(ofname))
                 if options.set_oldest:
-                    yield set_oldest, (ofname,dfname)
-                yield os.unlink, (ofname,)
+                    yield Action(set_oldest, (ofname,dfname))
+                yield Action(os.unlink, (ofname,))
         except IOError as e:
             import sys
             sys.stderr.write('Error accessing `{}`/`{}`: {}\n'.format(ofname, dfname, e))
@@ -173,12 +182,12 @@ def main(argv):
             from sys import exit
             print('origin and dest are the same.')
             exit(2)
-        for op,args in merge(origin, dest, options):
+        for op in merge(origin, dest, options):
             try:
-                op(*args)
+                op.run()
             except IOError as err:
                 import sys
-                sys.stderr.write('Error executing {} {}: {}\n'.format(op, args, err))
+                sys.stderr.write('Error executing {} {}: {}\n'.format(op.f, op.args, err))
                 if not options.continue_on_error:
                     break
     elif options.mode == 'hash':
