@@ -10,7 +10,7 @@ small utility performs the necessary checks before removing the files.
 
 Usage::
 
-    merge.py INPUT_DIR DEST_DIR
+    mergedirs.py INPUT_DIR DEST_DIR
 
 Flags
 -----

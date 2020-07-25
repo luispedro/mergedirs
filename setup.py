@@ -32,6 +32,11 @@ setup(name='merge',
       scripts = ['bin/mergedirs'],
       license='BSD',
       packages=find_packages(),
+      entry_points={
+          'console_scripts': [
+              'mergedirs.py = merge.merge:main',
+          ],
+      },
       )
 
 

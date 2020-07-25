@@ -178,7 +178,9 @@ def parse_options(argv):
                         help='What to do [merge/hash]')
     return parser.parse_args(argv)
 
-def main(argv):
+def main(argv=None):
+    if argv is None:
+        from sys import argv
     options,args = parse_options(argv)
     if options.set_oldest and not options.ignore_flags:
         from sys import exit,stderr
