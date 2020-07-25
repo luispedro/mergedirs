@@ -96,6 +96,13 @@ class Action(object):
     def run(self):
         self.f(*self.args)
 
+def remove_or_set_oldest(options, ofname, dfname):
+    if options.verbose:
+        print('rm {}'.format(ofname))
+    if options.set_oldest:
+        return Action(set_oldest, (ofname,dfname))
+    return Action(os.unlink, (ofname,))
+
 def merge(origin, dest, options):
     '''
     for op in merge(origin, dest);
@@ -125,7 +132,12 @@ def merge(origin, dest, options):
                 elif options.verbose:
                     print('#mv {} {}'.format(ofname, dfname))
             elif path.islink(ofname):
-                print('Ignoring link: {}'.format(ofname))
+                if not path.islink(dfname):
+                    print('File types differ: {}'.format(fname))
+                elif os.readlink(ofname) == os.readlink(dfname):
+                    yield remove_or_set_oldest(options, ofname, dfname)
+                else:
+                    print('Mismatched link: {}'.format(ofname))
             elif path.isdir(ofname):
                 if options.ignore_git and fname == '.git':
                     print('Skipping .git directory: {}'.format(ofname))
@@ -142,11 +154,7 @@ def merge(origin, dest, options):
             elif not same_file_content(ofname, dfname):
                 print('Content differs: {}'.format(fname))
             else:
-                if options.verbose:
-                    print('rm {}'.format(ofname))
-                if options.set_oldest:
-                    yield Action(set_oldest, (ofname,dfname))
-                yield Action(os.unlink, (ofname,))
+                yield remove_or_set_oldest(options, ofname, dfname)
         except IOError as e:
             import sys
             sys.stderr.write('Error accessing `{}`/`{}`: {}\n'.format(ofname, dfname, e))
