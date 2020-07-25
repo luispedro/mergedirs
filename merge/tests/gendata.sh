@@ -7,7 +7,8 @@ for i in `seq 20`; do
     echo $i > $i
 done
 cd ..
-rsync --archive A/ B
+
+cp -pir A/ B
 sleep 2
 touch B/3
 cd ..
