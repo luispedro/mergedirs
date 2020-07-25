@@ -23,5 +23,5 @@ def test_rsync_copy():
 
 def test_merge():
     options,_ = merge.parse_options(['merge'])
-    for op, args in merge.merge('merge/tests/data/A', 'merge/tests/data/B', options):
-        assert op in (os.rename, os.unlink)
+    for op in merge.merge('merge/tests/data/A', 'merge/tests/data/B', options):
+        assert op.f in (os.rename, os.unlink)
