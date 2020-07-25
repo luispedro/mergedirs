@@ -21,7 +21,7 @@ def test_rsync_copy():
     # integer version:
     assert int(p[3]) == int(p2[3])
 
-def test_merge():
+def test_merge_actions():
     options,_ = merge.parse_options(['merge'])
     for op in merge.merge('merge/tests/data/A', 'merge/tests/data/B', options):
-        assert op.f in (os.rename, os.unlink)
+        assert op.f not in (os.rename, os.unlink)
