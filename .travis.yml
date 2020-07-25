@@ -7,4 +7,6 @@ python:
 install:
     - cd merge/tests && ./gendata.sh && cd ../..
 script:
+    - pwd
+    - find
     - nosetests -v
