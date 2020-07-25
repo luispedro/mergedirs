@@ -9,4 +9,6 @@ install:
 script:
     - pwd
     - find
+    - ls merge/tests/data/A
+    - ls merge/tests/data/B
     - nosetests -v
