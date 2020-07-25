@@ -6,4 +6,5 @@ python:
     - "3.6"
 install:
     - cd merge/tests && ./gendata.sh && cd ../..
-script: nosetests
+script:
+    - nosetests -v
