@@ -130,7 +130,7 @@ def merge(origin, dest, options):
                 if options.ignore_git and fname == '.git':
                     print('Skipping .git directory: {}'.format(ofname))
                 else:
-                    filequeue.extend(path.join(fname,ch) for ch in os.listdir(ofname))
+                    filequeue.extend(sorted(path.join(fname,ch) for ch in os.listdir(ofname)))
             elif not path.isfile(ofname):
                 print('Ignoring non-file non-directory: {}'.format(ofname))
             elif not options.ignore_flags and props_for(ofname) != props_for(dfname):
