@@ -117,7 +117,7 @@ def merge(origin, dest, options):
         ofname = path.join(origin, fname)
         dfname = path.join(dest, fname)
         try:
-            if not path.exists(dfname):
+            if not path.lexists(dfname):
                 if not options.remove_only:
                     if options.verbose:
                         print('mv {} {}'.format(ofname, dfname))
