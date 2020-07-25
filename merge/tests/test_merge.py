@@ -26,5 +26,5 @@ def test_merge_actions():
     n = 0
     for op in merge.mergedirs('merge/tests/data/A', 'merge/tests/data/B', options):
         n += 1
-        assert op.f not in (os.rename, os.unlink)
+        assert op.f in (os.rename, os.unlink)
     assert n > 0
