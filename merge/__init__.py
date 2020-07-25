@@ -1,1 +1,1 @@
-from .merge import hash_file, props_for, merge, parse_options
+from .merge import hash_file, props_for, mergedirs, parse_options

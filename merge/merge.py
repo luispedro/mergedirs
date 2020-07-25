@@ -103,7 +103,7 @@ def remove_or_set_oldest(options, ofname, dfname):
         return Action(set_oldest, (ofname,dfname))
     return Action(os.unlink, (ofname,))
 
-def merge(origin, dest, options):
+def mergedirs(origin, dest, options):
     '''
     for op in merge(origin, dest);
         op.run()
