@@ -127,6 +127,9 @@ def merge(origin, dest, options):
             elif path.islink(ofname):
                 print('Ignoring link: {}'.format(ofname))
             elif path.isdir(ofname):
+                if options.ignore_git and fname == '.git':
+                    print('Skipping .git directory: {}'.format(ofname))
+                else:
                     filequeue.extend(path.join(fname,ch) for ch in os.listdir(ofname))
             elif not path.isfile(ofname):
                 print('Ignoring non-file non-directory: {}'.format(ofname))
@@ -154,6 +157,7 @@ def parse_options(argv):
     from optparse import OptionParser
     parser = OptionParser(usage=_usage_simple.format(argv0=argv[0]), version=__version__)
     parser.add_option('--ignore-flags', action='store_true', dest='ignore_flags')
+    parser.add_option('--ignore-git', action='store_true', dest='ignore_git')
     parser.add_option('--remove-only', action='store_true', dest='remove_only')
     parser.add_option('--verbose', action='store_true', dest='verbose')
     parser.add_option('--continue-on-error', action='store_true', dest='continue_on_error')
