@@ -24,17 +24,16 @@ classifiers = [
 
 setup(name='merge',
       version=__version__,
-      description='Merge Directories',
+      description='Merge directories without losing files',
       long_description=long_description,
       author='Luis Pedro Coelho',
       author_email='luis@luispedro.org',
       url='http://luispedro.org/software/merge/',
-      scripts = ['bin/mergedirs'],
       license='BSD',
       packages=find_packages(),
       entry_points={
           'console_scripts': [
-              'mergedirs.py = merge.merge:main',
+              'mergedirs = mergedirs.merge:main',
           ],
       },
       )
