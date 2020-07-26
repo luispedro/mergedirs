@@ -28,7 +28,7 @@ def same_file_content(file1, file2):
     -------
     is_same : bool
     '''
-    bufsize = 8192
+    bufsize = 8192 * 1024
     with open(file1, 'rb') as input1:
         with open(file2, 'rb') as input2:
             while True:
