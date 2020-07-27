@@ -5,5 +5,5 @@ python:
     - "3.5"
     - "3.6"
 install:
-    - cd merge/tests && ./gendata.sh && cd ../..
+    - cd mergedirs/tests && ./gendata.sh && cd ../..
 script: nosetests
