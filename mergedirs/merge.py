@@ -211,7 +211,7 @@ def main(argv=None):
             exit(1)
         for arg in args[1:]:
             h = hash_recursive(arg)
-            print('{:<24} {}'.format(arg, h.decode('ascii')))
+            print('{} {}'.format(h.decode('ascii'), arg))
 
 
 if __name__ == '__main__':
