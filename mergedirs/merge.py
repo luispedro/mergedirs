@@ -68,8 +68,8 @@ def hash_recursive(directory):
     for f in files:
         p = path.join(directory, f)
         if path.islink(p):
-            hash.update('link')
-            hash.update(readlink(p))
+            hash.update(b'link')
+            hash.update(readlink(p).encode('utf-8'))
         elif path.isdir(p):
             hash.update(hash_recursive(p))
         elif path.isfile(p):
@@ -196,7 +196,7 @@ def main(argv=None):
             from sys import exit
             print('origin and dest are the same.')
             exit(2)
-        for op in merge(origin, dest, options):
+        for op in merge(origin.encode('utf-8'), dest.encode('utf-8'), options):
             try:
                 op.run()
             except IOError as err:
