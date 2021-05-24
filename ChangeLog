@@ -2,6 +2,7 @@ Version 0.1+
 	* Add --set-oldest flag
 	* Switch output of hashing mode to print hash first (like `md5sum` and
 	friends)
+	* Add --pre-hash flag for magnetic disks
 
 Version 0.1
 	* --verbose

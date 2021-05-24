@@ -14,7 +14,10 @@ Merges directory <origin> into directory <dest>
 
 Hash a directory (recursively)
 '''
-def same_file_content(file1, file2):
+
+_hash_cache = {}
+
+def same_file_content(file1, file2, use_hashing):
     '''same_file_content(file1: filepath, file2: filepath) -> bool
 
     Checks if `file1` and `file2` have the same content
@@ -23,11 +26,15 @@ def same_file_content(file1, file2):
     ----------
     file1 : filepath
     file2 : filepath
+    use_hashing : bool, optional
+        if true, hashes the files
 
     Returns
     -------
     is_same : bool
     '''
+    if use_hashing:
+        return lazy_hash_file(file1) == lazy_hash_file(file2)
     bufsize = 8192 * 1024
     with open(file1, 'rb') as input1:
         with open(file2, 'rb') as input2:
@@ -53,6 +60,17 @@ def hash_file(filename):
             hash.update(s)
             s = input.read(4096)
     return hash.hexdigest().encode('ascii')
+
+def lazy_hash_file(filename):
+    '''
+    hash = lazy_hash_file(filename)
+
+    Computes hash for contents of `filename` or look it up in cache
+    '''
+    if filename not in _hash_cache:
+        _hash_cache[filename] = hash_file(filename)
+    return _hash_cache[filename]
+
 
 def hash_recursive(directory):
     '''
@@ -118,11 +136,11 @@ def merge(origin, dest, options):
         path to destination
     options : options object
     '''
-    filequeue = os.listdir(origin)
+    filequeue = [(b'',sub) for sub in os.scandir(origin)]
     while filequeue:
-        fname = filequeue.pop()
-        ofname = path.join(origin, fname)
-        dfname = path.join(dest, fname)
+        (basedir, dir_obj)= filequeue.pop()
+        ofname = dir_obj.path
+        dfname = path.join(dest, basedir, dir_obj.name)
         try:
             if not path.lexists(dfname):
                 if not options.remove_only:
@@ -131,28 +149,34 @@ def merge(origin, dest, options):
                     yield Action(shutil.move, (ofname, dfname))
                 elif options.verbose:
                     print('#mv {} {}'.format(ofname, dfname))
-            elif path.islink(ofname):
+            elif dir_obj.is_symlink():
                 if not path.islink(dfname):
-                    print('File types differ: {}'.format(fname))
+                    print('File types differ: {}'.format(dir_obj.name))
                 elif os.readlink(ofname) == os.readlink(dfname):
                     yield remove_or_set_oldest(options, ofname, dfname)
                 else:
                     print('Mismatched link: {}'.format(ofname))
-            elif path.isdir(ofname):
-                if options.ignore_git and fname == '.git':
+            elif dir_obj.is_dir():
+                if options.ignore_git and (dir_obj.name == '.git' or dir_obj.name.endswith(b'/.git')):
                     print('Skipping .git directory: {}'.format(ofname))
                 else:
-                    filequeue.extend(sorted(path.join(fname,ch) for ch in os.listdir(ofname)))
-            elif not path.isfile(ofname):
+                    n = 0
+                    for p_s in sorted([(path.join(basedir, dir_obj.name), subdir) for subdir in os.scandir(ofname)], key=(lambda sc: sc[1].name)):
+                        _,s = p_s
+                        if options.pre_hash and s.is_file():
+                            n += 1
+                            lazy_hash_file(s.path)
+                        filequeue.append(p_s)
+            elif not dir_obj.is_file():
                 print('Ignoring non-file non-directory: {}'.format(ofname))
             elif not options.ignore_flags and props_for(ofname) != props_for(dfname):
-                print('Flags differ: {}'.format(fname))
+                print('Flags differ: {}'.format(dir_obj.name))
             elif path.isdir(dfname):
                 print('File `{}` matches directory `{}`'.format(ofname, dfname))
             elif not path.isfile(dfname) and not (options.follow_links and path.islink(dfname)):
                 print('File `{}` matches non-file `{}`'.format(ofname, dfname))
-            elif not same_file_content(ofname, dfname):
-                print('Content differs: {}'.format(fname))
+            elif not same_file_content(ofname, dfname, options.pre_hash):
+                print('Content differs: {}'.format(dir_obj.name))
             else:
                 yield remove_or_set_oldest(options, ofname, dfname)
         except IOError as e:
@@ -171,6 +195,9 @@ def parse_options(argv):
     parser.add_option('--continue-on-error', action='store_true', dest='continue_on_error')
     parser.add_option('--follow-links', action='store_true', dest='follow_links', help='Follow links to content (destination)')
     parser.add_option('--set-oldest', action='store_true', dest='set_oldest', help='Set mtime & atime to oldest of origin/destination')
+    parser.add_option('--use-pre-hash', action='store_true', dest='pre_hash',
+            help='Use pre-hashing. This is often useful for large files on magnetic disks as it reads the data in a nicer pattern. '
+                'However, it requires reading all the input files, so it may result in more IO overall.')
     parser.add_option('--mode',
                         action='store',
                         dest='mode',
