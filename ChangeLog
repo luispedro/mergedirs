@@ -1,4 +1,5 @@
 Version 0.1+
+	* Switch to Github actions
 	* Add --set-oldest flag
 	* Switch output of hashing mode to print hash first (like `md5sum` and
 	friends)
