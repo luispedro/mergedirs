@@ -116,7 +116,7 @@ class Action(object):
 
 def remove_or_set_oldest(options, ofname, dfname):
     if options.verbose:
-        print('rm {}'.format(ofname))
+        print(f'rm {ofname.decode(errors="ignore")}')
     if options.set_oldest:
         return Action(set_oldest, (ofname,dfname))
     return Action(os.unlink, (ofname,))
