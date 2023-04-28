@@ -1,21 +1,11 @@
 # -*- coding: utf-8 -*-
-try:
-    from setuptools import setup, find_packages
-except ImportError:
-    import sys
-    sys.stderr.write('''\
-Could not import `setuptools` module.
+from setuptools import setup, find_packages
 
-Please install it.
+exec(compile(open('mergedirs/mergedirs_version.py').read(),
+             'mergedirs/mergedirs_version.py', 'exec'))
 
-Under Ubuntu, it is in a package called `python-setuptools`.
-''')
-    sys.exit(1)
+long_description = open('README.md', encoding='utf-8').read()
 
-__version__ = '0.1-git'
-
-long_description='''
-'''
 classifiers = [
     'License :: OSI Approved :: BSD License',
     'Operating System :: OS Independent',
@@ -28,9 +18,9 @@ setup(name='merge',
       long_description=long_description,
       author='Luis Pedro Coelho',
       author_email='luis@luispedro.org',
-      url='http://luispedro.org/software/merge/',
+      url='https://luispedro.org/software/merge/',
       license='BSD',
-      packages=find_packages(),
+      packages=['mergedirs'],
       entry_points={
           'console_scripts': [
               'mergedirs = mergedirs.merge:main',

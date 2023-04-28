@@ -3,8 +3,8 @@ from os import path
 import shutil
 import hashlib
 from .flags import set_oldest
+from .mergedirs_version import __version__
 
-__version__ = '0.1'
 _usage_simple = '''
 {argv0} <origin> <dest>
 
