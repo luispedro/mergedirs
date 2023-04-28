@@ -137,6 +137,7 @@ def merge(origin, dest, options):
     options : options object
     '''
     filequeue = [(b'',sub) for sub in os.scandir(origin)]
+    filequeue.sort(key=(lambda sc: sc[1].name), reverse=True)
     while filequeue:
         (basedir, dir_obj)= filequeue.pop()
         ofname = dir_obj.path
@@ -161,7 +162,7 @@ def merge(origin, dest, options):
                     print('Skipping .git directory: {}'.format(ofname))
                 else:
                     n = 0
-                    for p_s in sorted([(path.join(basedir, dir_obj.name), subdir) for subdir in os.scandir(ofname)], key=(lambda sc: sc[1].name)):
+                    for p_s in sorted([(path.join(basedir, dir_obj.name), subdir) for subdir in os.scandir(ofname)], key=(lambda sc: sc[1].name), reverse=True):
                         _,s = p_s
                         if options.pre_hash and s.is_file():
                             n += 1
