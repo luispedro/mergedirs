@@ -2,6 +2,7 @@ import os
 from os import path
 import shutil
 import hashlib
+import collections
 from .flags import set_oldest
 from .mergedirs_version import __version__
 
@@ -96,14 +97,23 @@ def hash_recursive(directory):
             raise OSError("Cannot handle files such as `{}`".format(p))
     return hash.hexdigest().encode('ascii')
 
-def props_for(filename):
+
+FileProps = collections.namedtuple('FileProps', ['mode', 'uid', 'gid', 'mtime'])
+
+def props_for(filename, round_secs=False):
     '''
-    props = props_for(filename)
+    props = props_for(filename, round_secs=False)
 
     Properties for `filename`
+
+    round_secs: boolean
+        Whether to round mtime to seconds
     '''
     st = os.stat(filename)
-    return st.st_mode, st.st_uid, st.st_gid, st.st_mtime
+    mtime = st.st_mtime
+    if round_secs:
+        mtime = int(mtime)
+    return FileProps(st.st_mode, st.st_uid, st.st_gid, mtime)
 
 
 class Action(object):
@@ -170,8 +180,11 @@ def merge(origin, dest, options):
                         filequeue.append(p_s)
             elif not dir_obj.is_file():
                 print('Ignoring non-file non-directory: {}'.format(ofname))
-            elif not options.ignore_flags and props_for(ofname) != props_for(dfname):
-                print('Flags differ: {}'.format(dir_obj.name))
+            elif not options.ignore_flags and props_for(ofname, options.mtime_ignore_subsec) != props_for(dfname, options.mtime_ignore_subsec):
+                if options.verbose:
+                    print('Flags differ: {} ({} != {})'.format(dir_obj.name, props_for(dfname, options.mtime_ignore_subsec), props_for(ofname, options.mtime_ignore_subsec)))
+                else:
+                    print('Flags differ: {}'.format(dir_obj.name))
             elif path.isdir(dfname):
                 print('File `{}` matches directory `{}`'.format(ofname, dfname))
             elif not path.isfile(dfname) and not (options.follow_links and path.islink(dfname)):
@@ -190,6 +203,10 @@ def parse_options(argv):
     from optparse import OptionParser
     parser = OptionParser(usage=_usage_simple.format(argv0=argv[0]), version=__version__)
     parser.add_option('--ignore-flags', action='store_true', dest='ignore_flags')
+    parser.add_option('--mtime-ignore-subsecond',
+                        action='store_true',
+                        dest='mtime_ignore_subsec',
+                        help='Ignore sub-second difference in mtime')
     parser.add_option('--ignore-git', action='store_true', dest='ignore_git')
     parser.add_option('--remove-only', action='store_true', dest='remove_only')
     parser.add_option('--verbose', action='store_true', dest='verbose')

@@ -1,9 +1,10 @@
 Version 0.1+
-	* Switch to Github actions
-	* Add --set-oldest flag
-	* Switch output of hashing mode to print hash first (like `md5sum` and
+	* margedirs: Add `--mtime-ignore-subsecond` flag
+	* build: Switch to Github actions
+	* mergedirs: Add --set-oldest flag
+	* hash-mode: Switch output of hashing mode to print hash first (like `md5sum` and
 	friends)
-	* Add --pre-hash flag for magnetic disks
+	* mergedirs: Add --pre-hash flag for magnetic disks
 
 Version 0.1
 	* --verbose
