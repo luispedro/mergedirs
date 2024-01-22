@@ -1,5 +1,4 @@
-# -*- coding: utf-8 -*-
-from setuptools import setup, find_packages
+from setuptools import setup
 
 exec(compile(open('mergedirs/mergedirs_version.py').read(),
              'mergedirs/mergedirs_version.py', 'exec'))
@@ -10,12 +9,19 @@ classifiers = [
     'License :: OSI Approved :: BSD License',
     'Operating System :: OS Independent',
     'Programming Language :: Python',
+    'Programming Language :: Python :: 3.6',
+    'Programming Language :: Python :: 3.7',
+    'Programming Language :: Python :: 3.8',
+    'Programming Language :: Python :: 3.9',
+    'Programming Language :: Python :: 3.10',
+    'Programming Language :: Python :: 3.11',
     ]
 
-setup(name='merge',
+setup(name='mergedirs',
       version=__version__,
       description='Merge directories without losing files',
       long_description=long_description,
+      long_description_content_type='text/markdown',
       author='Luis Pedro Coelho',
       author_email='luis@luispedro.org',
       url='https://luispedro.org/software/merge/',

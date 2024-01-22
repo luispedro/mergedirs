@@ -1,4 +1,4 @@
 *.pyc
 /dist/
-/merge.egg-info/
+/mergedirs.egg-info/
 /build/

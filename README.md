@@ -8,17 +8,25 @@ small utility performs the necessary checks before removing the files.
 
 Usage:
 
+```bash
     mergedirs.py INPUT_DIR DEST_DIR
+```
 
-## Flags
+## Main Flags
 
 - `remove-only`: Do not copy files, only remove duplicates
-
 - `verbose`: be verbose
-
 - `ignore-flags`: ignore file mode, mtime, &c
 
-_AUTHOR_: Luis Pedro Coelho <luis@luispedro.org>
+Use
+
+```bash
+mergedirs --help
+```
+
+for a full list
+
+_AUTHOR_: Luis Pedro Coelho [luis@luispedro.org](mailto:luis@luispedro.org)
 
 _LICENSE_: MIT
 
