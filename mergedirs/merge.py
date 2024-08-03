@@ -1,4 +1,5 @@
 import os
+import sys
 from os import path
 import shutil
 import hashlib
@@ -16,7 +17,6 @@ Merges directory <origin> into directory <dest>
 Hash a directory (recursively)
 '''
 
-_hash_cache = {}
 
 def same_file_content(file1, file2, use_hashing):
     '''same_file_content(file1: filepath, file2: filepath) -> bool
@@ -47,6 +47,7 @@ def same_file_content(file1, file2, use_hashing):
                 if not data1:
                     return True
 
+
 def hash_file(filename):
     '''
     hash = hash_file(filename)
@@ -62,6 +63,8 @@ def hash_file(filename):
             s = input.read(4096)
     return hash.hexdigest().encode('ascii')
 
+
+_hash_cache = {}
 def lazy_hash_file(filename):
     '''
     hash = lazy_hash_file(filename)
@@ -124,6 +127,7 @@ class Action(object):
     def run(self):
         self.f(*self.args)
 
+
 def remove_or_set_oldest(options, ofname, dfname):
     if options.verbose:
         print(f'rm {ofname.decode(errors="ignore")}')
@@ -149,7 +153,7 @@ def merge(origin, dest, options):
     filequeue = [(b'',sub) for sub in os.scandir(origin)]
     filequeue.sort(key=(lambda sc: sc[1].name), reverse=True)
     while filequeue:
-        (basedir, dir_obj)= filequeue.pop()
+        (basedir, dir_obj) = filequeue.pop()
         ofname = dir_obj.path
         dfname = path.join(dest, basedir, dir_obj.name)
         try:
@@ -171,11 +175,11 @@ def merge(origin, dest, options):
                 if options.ignore_git and (dir_obj.name == '.git' or dir_obj.name.endswith(b'/.git')):
                     print('Skipping .git directory: {}'.format(ofname))
                 else:
-                    n = 0
-                    for p_s in sorted([(path.join(basedir, dir_obj.name), subdir) for subdir in os.scandir(ofname)], key=(lambda sc: sc[1].name), reverse=True):
-                        _,s = p_s
+                    for p_s in sorted([(path.join(basedir, dir_obj.name), subdir) for subdir in os.scandir(ofname)],
+                                      key=(lambda sc: sc[1].name),
+                                      reverse=True):
+                        _, s = p_s
                         if options.pre_hash and s.is_file():
-                            n += 1
                             lazy_hash_file(s.path)
                         filequeue.append(p_s)
             elif not dir_obj.is_file():
@@ -194,7 +198,6 @@ def merge(origin, dest, options):
             else:
                 yield remove_or_set_oldest(options, ofname, dfname)
         except IOError as e:
-            import sys
             sys.stderr.write('Error accessing `{}`/`{}`: {}\n'.format(ofname, dfname, e))
             if not options.continue_on_error:
                 return
@@ -207,10 +210,10 @@ def parse_options(argv):
                         action='store_true',
                         dest='mtime_ignore_subsec',
                         help='Ignore sub-second difference in mtime')
-    parser.add_option('--ignore-git', action='store_true', dest='ignore_git')
-    parser.add_option('--remove-only', action='store_true', dest='remove_only')
+    parser.add_option('--ignore-git', action='store_true', dest='ignore_git', help='Ignore .git directories')
+    parser.add_option('--remove-only', action='store_true', dest='remove_only', help='Only remove files')
     parser.add_option('--verbose', action='store_true', dest='verbose')
-    parser.add_option('--continue-on-error', action='store_true', dest='continue_on_error')
+    parser.add_option('--continue-on-error', action='store_true', dest='continue_on_error', help='Continue on error(s)')
     parser.add_option('--follow-links', action='store_true', dest='follow_links', help='Follow links to content (destination)')
     parser.add_option('--set-oldest', action='store_true', dest='set_oldest', help='Set mtime & atime to oldest of origin/destination')
     parser.add_option('--use-pre-hash', action='store_true', dest='pre_hash',
@@ -245,7 +248,6 @@ def main(argv=None):
             try:
                 op.run()
             except IOError as err:
-                import sys
                 sys.stderr.write('Error executing {} {}: {}\n'.format(op.f, op.args, err))
                 if not options.continue_on_error:
                     break
@@ -260,6 +262,4 @@ def main(argv=None):
 
 
 if __name__ == '__main__':
-    import sys
     main(sys.argv)
-
