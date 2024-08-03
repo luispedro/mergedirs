@@ -1,5 +1,5 @@
 Version 0.2 21 Jan 2024 by luispedro
-	* margedirs: Add `--mtime-ignore-subsecond` flag
+	* mergedirs: Add `--mtime-ignore-subsecond` flag
 	* build: Switch to Github actions
 	* mergedirs: Add --set-oldest flag
 	* hash-mode: Switch output of hashing mode to print hash first (like `md5sum` and
