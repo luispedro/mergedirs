@@ -128,12 +128,20 @@ class Action(object):
         self.f(*self.args)
 
 
+class RemoveAction:
+    def __init__(self, f):
+        self.f = f
+
+    def run(self):
+        os.unlink(self.f)
+
+
 def remove_or_set_oldest(options, ofname, dfname):
     if options.verbose:
         print(f'rm {ofname.decode(errors="ignore")}')
     if options.set_oldest:
         return Action(set_oldest, (ofname,dfname))
-    return Action(os.unlink, (ofname,))
+    return RemoveAction(ofname)
 
 def merge(origin, dest, options):
     '''
