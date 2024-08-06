@@ -213,7 +213,7 @@ def parse_options(argv):
     parser.add_option('--ignore-git', action='store_true', dest='ignore_git', help='Ignore .git directories')
     parser.add_option('--remove-only', action='store_true', dest='remove_only', help='Only remove files')
     parser.add_option('--verbose', action='store_true', dest='verbose')
-    parser.add_option('--continue-on-error', action='store_true', dest='continue_on_error', help='Continue on error(s)')
+    parser.add_option('--continue-on-error', '--keep-going', action='store_true', dest='continue_on_error', help='Continue on error(s)')
     parser.add_option('--follow-links', action='store_true', dest='follow_links', help='Follow links to content (destination)')
     parser.add_option('--set-oldest', action='store_true', dest='set_oldest', help='Set mtime & atime to oldest of origin/destination')
     parser.add_option('--use-pre-hash', action='store_true', dest='pre_hash',
