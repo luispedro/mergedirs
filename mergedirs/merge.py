@@ -135,6 +135,9 @@ class RemoveAction:
     def run(self):
         os.unlink(self.f)
 
+    def __str__(self):
+        return f'RemoveAction({self.f})'
+
 
 def remove_or_set_oldest(options, ofname, dfname):
     if options.verbose:
