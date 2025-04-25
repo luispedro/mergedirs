@@ -256,7 +256,7 @@ def main(argv=None):
             try:
                 op.run()
             except IOError as err:
-                sys.stderr.write('Error executing {} {}: {}\n'.format(op.f, op.args, err))
+                sys.stderr.write(f'Error executing {op}: {err}\n')
                 if not options.continue_on_error:
                     break
     elif options.mode == 'hash':
