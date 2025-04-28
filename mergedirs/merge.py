@@ -146,6 +146,7 @@ def remove_or_set_oldest(options, ofname, dfname):
         return Action(set_oldest, (ofname,dfname))
     return RemoveAction(ofname)
 
+
 def merge(origin, dest, options):
     '''
     for op in merge(origin, dest);
@@ -183,7 +184,7 @@ def merge(origin, dest, options):
                 else:
                     print('Mismatched link: {}'.format(ofname))
             elif dir_obj.is_dir():
-                if options.ignore_git and (dir_obj.name == '.git' or dir_obj.name.endswith(b'/.git')):
+                if options.ignore_git and (dir_obj.name == b'.git' or dir_obj.name.endswith(b'/.git')):
                     print('Skipping .git directory: {}'.format(ofname))
                 else:
                     for p_s in sorted([(path.join(basedir, dir_obj.name), subdir) for subdir in os.scandir(ofname)],
