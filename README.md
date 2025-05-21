@@ -1,4 +1,4 @@
-# Merge
+# Mergedirs
 
 Merge two directories without losing any content.
 
