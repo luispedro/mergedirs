@@ -1,5 +1,7 @@
 Unreleased
 	* mergedirs: Add `--keep-going` as synonym for `--continue-on-error`
+	* mergedirs: Add `--ignore-git-worktrees` option (to ignore git worktrees,
+	i.e. directories with `.git` subdirectories)
 
 Version 0.2 21 Jan 2024 by luispedro
 	* mergedirs: Add `--mtime-ignore-subsecond` flag

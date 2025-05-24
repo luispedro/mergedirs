@@ -187,13 +187,17 @@ def merge(origin, dest, options):
                 if options.ignore_git and (dir_obj.name == b'.git' or dir_obj.name.endswith(b'/.git')):
                     print('Skipping .git directory: {}'.format(ofname))
                 else:
-                    for p_s in sorted([(path.join(basedir, dir_obj.name), subdir) for subdir in os.scandir(ofname)],
+                    content = sorted([(path.join(basedir, dir_obj.name), subdir) for subdir in os.scandir(ofname)],
                                       key=(lambda sc: sc[1].name),
-                                      reverse=True):
-                        _, s = p_s
-                        if options.pre_hash and s.is_file():
-                            lazy_hash_file(s.path)
-                        filequeue.append(p_s)
+                                      reverse=True)
+                    if options.ignore_git_worktrees and any(subdir.name == b'.git' for _, subdir in content):
+                        print('Ignoring .git worktree: {}'.format(ofname))
+                    else:
+                        for p_s in content:
+                            _, s = p_s
+                            if options.pre_hash and s.is_file():
+                                lazy_hash_file(s.path)
+                            filequeue.append(p_s)
             elif not dir_obj.is_file():
                 print('Ignoring non-file non-directory: {}'.format(ofname))
             elif not options.ignore_flags and props_for(ofname, options.mtime_ignore_subsec) != props_for(dfname, options.mtime_ignore_subsec):
@@ -223,6 +227,7 @@ def parse_options(argv):
                         dest='mtime_ignore_subsec',
                         help='Ignore sub-second difference in mtime')
     parser.add_option('--ignore-git', action='store_true', dest='ignore_git', help='Ignore .git directories')
+    parser.add_option('--ignore-git-worktrees', action='store_true', dest='ignore_git_worktrees', help='Ignore git worktree')
     parser.add_option('--remove-only', action='store_true', dest='remove_only', help='Only remove files')
     parser.add_option('--verbose', action='store_true', dest='verbose')
     parser.add_option('--continue-on-error', '--keep-going', action='store_true', dest='continue_on_error', help='Continue on error(s)')
