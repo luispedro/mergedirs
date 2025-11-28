@@ -243,6 +243,15 @@ def parse_options(argv):
                         help='What to do [merge/hash]')
     return parser.parse_args(argv)
 
+def main_hashdirs(argv=None):
+    if argv is None:
+        from sys import argv
+        args = argv
+    for arg in args[1:]:
+        h = hash_recursive(arg)
+        print(f'{h.decode("ascii")} {arg}')
+
+
 def main(argv=None):
     if argv is None:
         from sys import argv

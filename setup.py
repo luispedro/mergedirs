@@ -30,6 +30,7 @@ setup(name='mergedirs',
       entry_points={
           'console_scripts': [
               'mergedirs = mergedirs.merge:main',
+              'hashdirs = mergedirs.merge:main_hashdirs',
           ],
       },
       )
