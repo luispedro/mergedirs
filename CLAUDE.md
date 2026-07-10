@@ -24,7 +24,7 @@ python -m pytest mergedirs/tests/
 python -m pytest mergedirs/tests/test_merge.py::test_merge   # single test
 ```
 
-Entry points (defined in `setup.py`):
+Entry points (defined in `pyproject.toml`):
 - `mergedirs <origin> <dest>` — merge mode (default)
 - `mergedirs --mode=hash <dir>...` — recursive directory hash
 - `hashdirs <dir>...` — shortcut for hash mode
@@ -46,6 +46,6 @@ Key implementation details to preserve when editing:
 
 ## Notes
 
-- Python 3.6+ (CI matrix: 3.6–3.12 on Linux/macOS/Windows).
-- Uses `optparse`, not `argparse` — keep it that way unless dropping 3.6 support.
-- `setup.py` execs `mergedirs/mergedirs_version.py` to read `__version__`; bump it there.
+- Python 3.10+ (CI matrix: 3.10–3.14).
+- Uses `optparse`, not `argparse`.
+- `pyproject.toml` reads `__version__` from `mergedirs/mergedirs_version.py`; bump it there.
