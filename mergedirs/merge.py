@@ -243,11 +243,22 @@ def parse_options(argv):
                         help='What to do [merge/hash]')
     return parser.parse_args(argv)
 
+_usage_hashdirs = '''
+{argv0} <directory>...
+
+Hash directories (recursively), printing one hash per line
+'''
+
 def main_hashdirs(argv=None):
     if argv is None:
-        from sys import argv
-        args = argv
-    for arg in args[1:]:
+        argv = sys.argv
+    from optparse import OptionParser
+    parser = OptionParser(usage=_usage_hashdirs.format(argv0=argv[0]), version=__version__)
+    _,args = parser.parse_args(argv[1:])
+    if not args:
+        parser.print_help()
+        sys.exit(1)
+    for arg in args:
         h = hash_recursive(arg)
         print(f'{h.decode("ascii")} {arg}')
 
